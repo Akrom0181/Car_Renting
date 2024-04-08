@@ -1,9 +1,7 @@
 package api
 
 import (
-	"errors"
 	"fmt"
-	"net/http"
 	"rent-car/api/handler"
 	"rent-car/pkg/logger"
 	"rent-car/service"
@@ -27,7 +25,7 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.Use(authMiddleware)
+	// r.Use(authMiddleware)
 
 	r.Use(getHeaders)
 
@@ -48,6 +46,8 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 	r.PUT("/customer/:id", h.UpdateCustomer)
 	r.DELETE("/customer/:id", h.DeleteCustomer)
 	r.PATCH("/customer/:phone", h.ChangePassword)
+	r.PUT("customer/login", h.Login)
+
 
 	r.GET("/order", h.GetAllOrder)
 	r.GET("/order/:id", h.GetOne)
@@ -59,13 +59,13 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 	return r
 }
 
-func authMiddleware(c *gin.Context) {
-	auth := c.GetHeader("Authorization")
-	if auth == "" {
-		c.AbortWithError(http.StatusUnauthorized, errors.New("unauthorized"))
-	}
-	c.Next()
-}
+// func authMiddleware(c *gin.Context) {
+// 	auth := c.GetHeader("Authorization")
+// 	if auth == "" {
+// 		c.AbortWithError(http.StatusUnauthorized, errors.New("unauthorized"))
+// 	}
+// 	c.Next()
+// }
 
 func getHeaders(c *gin.Context) {
 	headers := c.Request.Header

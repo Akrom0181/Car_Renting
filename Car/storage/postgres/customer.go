@@ -3,10 +3,12 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"rent-car/api/models"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/google/uuid"
 )
@@ -41,10 +43,27 @@ func (c *customerRepo) Create(ctx context.Context, customer models.Customer) (st
 	return id.String(), nil
 }
 
+// func (c *customerRepo) Login(ctx context.Context, log models.Login) (string, error) {
+	
+
+// }
+
 func (c *customerRepo) ChangePassword(ctx context.Context, customer models.Customer) (string, error) {
+
+	var currentPassword string
+	errorr := c.db.QueryRow(ctx, `SELECT password FROM customers WHERE phone = $1`, customer.Phone).Scan(&currentPassword)
+	if errorr != nil {
+		return "", errors.New("customer not found")
+	}
+
+	errr := bcrypt.CompareHashAndPassword([]byte(currentPassword), []byte(customer.Password))
+	if errr != nil {
+		return "", errors.New("invalid old password")
+	}
+
 	query := `UPDATE customers SET password = $1 where phone = $2`
-	_, err := c.db.Exec(context.Background(), query, 
-		customer.Password, 
+	_, err := c.db.Exec(context.Background(), query,
+		customer.Password,
 		customer.Phone)
 	if err != nil {
 		return "", err
@@ -52,9 +71,10 @@ func (c *customerRepo) ChangePassword(ctx context.Context, customer models.Custo
 	return "Successfully changed", nil
 }
 
-func (c *customerRepo) GetPassword(ctx context.Context, customer models.GetPassword) (string, error) {
-	query := `SELECT password from customers WHERE id=$1`
-	_, err := c.db.Exec(context.Background(), query, customer.Password)
+func (c *customerRepo) GetPassword(ctx context.Context, phone string) (string, error) {
+	customer := models.GetPassword{}
+	query := `SELECT password from customers WHERE phone=$1`
+	_, err := c.db.Exec(context.Background(), query, phone)
 	if err != nil {
 		return "", err
 	}
@@ -113,7 +133,7 @@ func (c *customerRepo) GetAll(ctx context.Context, req models.GetAllCustomersReq
 		var (
 			customer   = models.Customer{}
 			Updated_at sql.NullString
-			CreatedAt sql.NullString
+			CreatedAt  sql.NullString
 		)
 		if err := rows.Scan(
 			&resp.Count,

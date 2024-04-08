@@ -26,6 +26,10 @@ type CreateCustomer struct {
 	Password   string `json:"password"`
 }
 
+type Login struct {
+	Phone      string
+	Password string
+}
 
 type ChangePassword struct {
 	Password string `json:"password"`

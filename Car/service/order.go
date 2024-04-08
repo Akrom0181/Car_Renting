@@ -4,16 +4,19 @@ import (
 	"context"
 	"fmt"
 	"rent-car/api/models"
+	"rent-car/pkg/logger"
 	"rent-car/storage"
 )
 
 type orderService struct {
 	storage storage.IStorage
+	log     logger.ILogger
 }
 
-func NewOrderService(storage storage.IStorage) orderService {
+func NewOrderService(storage storage.IStorage, log logger.ILogger) orderService {
 	return orderService{
 		storage: storage,
+		log:     log,
 	}
 }
 
@@ -21,7 +24,7 @@ func (u orderService) Create(ctx context.Context, order models.CreateOrder) (str
 
 	pKey, err := u.storage.Order().CreateOrder(ctx, order)
 	if err != nil {
-		fmt.Println("ERROR in service layer while creating order", err.Error())
+		u.log.Error("ERROR in service layer while creating order", logger.Error(err))
 		return "", err
 	}
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"rent-car/pkg/logger"
 	"rent-car/storage"
 )
 
@@ -16,11 +17,11 @@ type Service struct {
 	orderService    orderService
 }
 
-func New(storage storage.IStorage) Service {
+func New(storage storage.IStorage, log logger.ILogger) Service {
 	services := Service{}
-	services.carService = NewCarService(storage)
-	services.customerService = NewCustomerService(storage)
-	services.orderService = NewOrderService(storage)
+	services.carService = NewCarService(storage, log)
+	services.customerService = NewCustomerService(storage, log)
+	services.orderService = NewOrderService(storage, log)
 	return services
 }
 

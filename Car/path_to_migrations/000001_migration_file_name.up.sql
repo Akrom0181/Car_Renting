@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS cars (
     hourse_power INTEGER DEFAULT 0,
     colour VARCHAR(20) NOT NULL DEFAULT 'black',
     engine_cap DECIMAL(10,2) NOT NULL DEFAULT 1.0,
-    year INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP,
     deleted_at INTEGER DEFAULT 0
@@ -20,8 +19,8 @@ CREATE TABLE IF NOT EXISTS customers(
     gmail VARCHAR(50) NOT NULL,
     phone VARCHAR(20) UNIQUE NOT NULL,
     is_blocked BOOLEAN NOT NULL DEFAULT FALSE,
-    login varchar(30) NOT NULL DEFAULT 'customer',
-    password varchar(30) NOT NULL DEFAULT 'customer',
+    login varchar(255) NOT NULL DEFAULT 'customer',
+    password varchar(255) NOT NULL DEFAULT 'customer',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP,
     deleted_at INTEGER DEFAULT 0

@@ -151,6 +151,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.Login:
+    properties:
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
   models.Response:
     properties:
       data: {}
@@ -649,6 +656,40 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: change customer password
+      tags:
+      - customer
+  /customer/login:
+    put:
+      consumes:
+      - application/json
+      description: This api is used for logining
+      parameters:
+      - description: login
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Login'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: login
       tags:
       - customer
   /getcar/{id}:
