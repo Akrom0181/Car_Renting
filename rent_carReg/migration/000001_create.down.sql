@@ -1,0 +1,3 @@
+-- Drop table if exists cars;
+-- Drop table if exists orders;
+-- Drop table if exists customers;
